@@ -1,5 +1,6 @@
 var popup = null;
 var inputlink; //ADDED LINE
+var inputlinkHOST = "edpuzzle.com"; //ADDED LINE
 var base_url;
 if (typeof document.dev_env != "undefined") {
   base_url = document.dev_env;
@@ -25,6 +26,7 @@ function http_get(url, callback, headers=[], method="GET", content=null) {
 }
 
 function init() {
+  inputlink = document.getElementById("input").value; //ADDED LINE
   if (window.location.hostname == "edpuzzle.hs.vc") {
     alert("To use this, drag this button into your bookmarks bar. Then, run it when you're on an Edpuzzle assignment.");
   }
@@ -43,7 +45,7 @@ function init() {
 }
 
 function handleCanvasURL() {
-  let location_split = window.location.href.split("/");
+  let location_split = inputlink.split("/"); //CHANGED
   let url = `/api/v1/courses/${location_split[4]}/assignments/${location_split[6]}`;
   http_get(url, function(){
     let data = JSON.parse(this.responseText);
@@ -60,7 +62,7 @@ function handleCanvasURL() {
 }
 
 function handleSchoologyURL() {
-  let assignment_id = window.location.href.split("/")[4];
+  let assignment_id = inputlink.split("/")[4]; //CHANGED
   let url = `/external_tool/${assignment_id}/launch/iframe`;
   http_get(url, function() {
     alert(`Please re-run this script in the newly opened tab. If nothing happens, then allow popups on Schoology and try again.`);
@@ -86,7 +88,7 @@ function handleSchoologyURL() {
 }
 
 function getAssignment(callback) {
-  var assignment_id = window.location.href.split("/")[4];
+  var assignment_id = inputlink.split("/")[4]; //CHANGRD
   if (typeof assignment_id == "undefined") {
     alert("Error: Could not infer the assignment ID. Are you on the correct URL?");
     return;
@@ -111,7 +113,7 @@ function openPopup(assignment) {
   var date = new Date(media.createdAt);
   thumbnail = media.thumbnailURL;
   if (thumbnail.startsWith("/")) {
-    thumbnail = "https://"+window.location.hostname+thumbnail;
+    thumbnail = "https://"+inputlinkHOST+thumbnail; //CHANGED LINE
   }
   
   var deadline_text;
@@ -336,4 +338,4 @@ function parseQuestions(questions) {
   popup.questions = questions;
 }
 
-init();
+//DELETED LINE
